@@ -9,6 +9,9 @@ import { useLoadingCallback } from "react-loading-hook";
 import Button from './Button';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import { useHistory } from 'react-router-dom';
+import { shuffle } from 'lodash';
+
 
 
 
@@ -19,7 +22,9 @@ const useStyles = makeStyles({
     },
 });
 
-const Question = () => {
+const Game = () => {
+
+    const history = useHistory();
 
     const classes = useStyles();
     const [allQuestions, setAllQuestions] = useState([]);
@@ -31,8 +36,8 @@ const Question = () => {
 
 
     const startGame = () => {
-
-    }
+        history.push('/');
+    };
 
     const [fetchQuestions, isLoading, error] = useLoadingCallback(
         async () => {
@@ -84,20 +89,9 @@ const Question = () => {
         allQuestions[questionIndex].incorrect_answers.map((incAnswer) =>
             allTheAnswers.push({ text: incAnswer, correct: false }));
         setQuestionIndex(questionIndex + 1);
-        setAllAnswers(shuffledAnswers(allTheAnswers));
+        setAllAnswers(shuffle(allTheAnswers));
     }
 
-
-    const shuffledAnswers = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-            // Generate random number  
-            let j = Math.floor(Math.random() * (i + 1));
-            let temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
-        return array;
-    }
 
 
     useEffect(() => {
@@ -133,7 +127,7 @@ const Question = () => {
                                     {removeSpecialChar(questionToShow.question)}
                                 </Typography>}
                             {!showPoints ? allAnswers.map((option) =>
-                                <Button m={1} variant="contained" color="primary" key={nanoid()} onClick={() => checkAnswer(option)}>{option.text}
+                                <Button m={1} variant="contained" color="primary" key={nanoid()} onClick={() => checkAnswer(option)}>{removeSpecialChar(option.text)}
                                 </Button>) : <Button m={1} variant="contained" color="secondary" onClick={startGame}>Play again</Button>}
                         </CardContent>
                     </Card>
@@ -147,4 +141,4 @@ const Question = () => {
 
 
 
-export default Question;
+export default Game;
